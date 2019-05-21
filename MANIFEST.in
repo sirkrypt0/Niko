@@ -1,0 +1,4 @@
+include *.txt
+recursive-include niko *.pdf
+recursive-include niko *.gif
+include install.bat
