@@ -10,3 +10,6 @@ Right now there is no specific installer for Unix systems, so you have to instal
 the .zip file.  
 
 You can also simply download the niko folder and run the `setup.py` script with suitable parameters to build an installer yourself.
+
+## Python 2.7 support
+As the PSF annoucend, that Python 2.7 will only get minor updates and Python 3 is the future of Python, this project will mainly be developed on Python 3. You can always go to the Python 2.7 branch and download this version as you need it. But be aware that nearly no progress will happen there.
