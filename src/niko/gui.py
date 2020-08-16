@@ -3,11 +3,37 @@ from threading import Thread
 
 from .util import resource_path
 
-class GuiLayout(Thread):
-    welt_CNV = None
+class GuiThreaded(Thread):
     def __init__(self, welt):
         Thread.__init__(self)
         self.welt = welt
+        self.welt_CNV = None
+
+    def setup(self):
+        self.gui = GuiLayout(self.welt)
+        self.welt_CNV = self.gui.welt_CNV
+
+    def teardown(self):
+        """
+        Damit tkinter im neuen Thread auch wieder ohne Fehler beendet wird,
+        müssen wir hier alle GUI bezogenen Objekte korrekt aufräumen.
+        """
+        self.gui.cleanup()
+        del self.gui, self.welt_CNV
+
+    def run(self):
+        self.setup()
+        self.gui.hauptfenster.mainloop()
+        self.teardown()
+
+    def aktualisiere(self, roboter):
+        self.gui.welt_CNV.aktualisiere(roboter)
+
+
+class GuiLayout():
+    def __init__(self, welt):
+        self.welt = welt
+
         self.hauptfenster=Tk()
         self.hauptfenster.geometry("743x688")
 
@@ -18,8 +44,11 @@ class GuiLayout(Thread):
 
         self.leiste_FRM = BasisFrame(self.hauptfenster, self.leistenHintergrund)
 
-    def run(self):
-        self.hauptfenster.mainloop()
+    def cleanup(self):
+        self.welt_CNV.cleanup()
+        self.hauptfenster.quit()
+        del self.welt_CNV, self.leiste_FRM, self.hauptfenster
+
 
 class WeltCanvas(Canvas):
     def __init__(self, hauptfenster, hintergrund, welt):
@@ -48,6 +77,9 @@ class WeltCanvas(Canvas):
         self.roboterBildRechts = PhotoImage(file=resource_path("robi_3.gif"))
         
         self.aktualisiere()
+
+    def cleanup(self):
+        del self.mauerBild, self.hammerBild, self.roboterBildOben, self.roboterBildLinks, self.roboterBildUnten, self.roboterBildRechts
     
     def rasterZeichnen(self):
         lineOffset = 2

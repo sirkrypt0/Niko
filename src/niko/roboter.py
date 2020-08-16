@@ -9,24 +9,24 @@ class Roboter:
 
         self.verzoegerung = verzoegerung
         
-        if not self.welt:
+        if Roboter.welt is None:
             if not weltdatei:
-                self.welt = Welt()
+                Roboter.welt = Welt()
             else:
-                self.welt = Welt(weltdatei)
+                Roboter.welt = Welt(weltdatei)
         
         self.pos_x = self.pos_y = self.welt.dimension-1
         self.ausrichtung = 0
         self.vorrat = 200
         self.lager = 0
 
-        if not self.guiLayout:
-            self.guiLayout = GuiLayout(self.welt)
-            self.guiLayout.start()
-            while self.guiLayout.welt_CNV is None: # warte bis thread gestartet ist
+        if Roboter.guiLayout is None:
+            Roboter.guiLayout = GuiThreaded(Roboter.welt)
+            Roboter.guiLayout.start()
+            while Roboter.guiLayout.welt_CNV is None: # warte bis thread gestartet ist
                 pass
         
-        self.interface = self.guiLayout.welt_CNV
+        self.interface = Roboter.guiLayout
         self.interface.aktualisiere(self)
 
     def vor(self):
