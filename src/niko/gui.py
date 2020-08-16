@@ -1,22 +1,22 @@
-from Tkinter import *
+from tkinter import *
 from threading import Thread
 
-from niko import RESOURCE_PFAD
+from .util import resource_path
 
 class GuiLayout(Thread):
+    welt_CNV = None
     def __init__(self, welt):
-
         Thread.__init__(self)
-        
+        self.welt = welt
         self.hauptfenster=Tk()
         self.hauptfenster.geometry("743x688")
 
         self.feldHintergrund = "white"
         self.leistenHintergrund = "#BBBBBB"
         
-        self.welt_CNV = WeltCanvas(self.hauptfenster,self.feldHintergrund, welt)
+        self.welt_CNV = WeltCanvas(self.hauptfenster, self.feldHintergrund, self.welt)
 
-        self.leiste_FRM = BasisFrame(self.hauptfenster,self.leistenHintergrund)
+        self.leiste_FRM = BasisFrame(self.hauptfenster, self.leistenHintergrund)
 
     def run(self):
         self.hauptfenster.mainloop()
@@ -39,13 +39,13 @@ class WeltCanvas(Canvas):
         for y in range(1,self.welt.dimension):
             self.create_line(0,y*self.feldgroesse,self.groesse,y*self.feldgroesse)
 
-        self.mauerBild = PhotoImage(file=RESOURCE_PFAD+"mauer.gif")
-        self.hammerBild = PhotoImage(file=RESOURCE_PFAD+"hammer.gif")
+        self.mauerBild = PhotoImage(file=resource_path("mauer.gif"))
+        self.hammerBild = PhotoImage(file=resource_path("hammer.gif"))
         
-        self.roboterBildOben = PhotoImage(file=RESOURCE_PFAD+"robi_0.gif")
-        self.roboterBildLinks = PhotoImage(file=RESOURCE_PFAD+"robi_1.gif")
-        self.roboterBildUnten = PhotoImage(file=RESOURCE_PFAD+"robi_2.gif")
-        self.roboterBildRechts = PhotoImage(file=RESOURCE_PFAD+"robi_3.gif")
+        self.roboterBildOben = PhotoImage(file=resource_path("robi_0.gif"))
+        self.roboterBildLinks = PhotoImage(file=resource_path("robi_1.gif"))
+        self.roboterBildUnten = PhotoImage(file=resource_path("robi_2.gif"))
+        self.roboterBildRechts = PhotoImage(file=resource_path("robi_3.gif"))
         
         self.aktualisiere()
     

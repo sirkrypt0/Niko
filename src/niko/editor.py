@@ -1,12 +1,12 @@
 # -*- coding: cp1252 -*-
 
-from Tkinter import *
-from welt import *
-from dateiDialog import *
-from gui import *
-import tkMessageBox
+from tkinter import *
+from .welt import *
+from .dateiDialog import *
+from .gui import *
+import tkinter.messagebox
 
-from niko import RESOURCE_PFAD
+from .util import resource_path
 
 class Editor(GuiLayout):
     def __init__(self):
@@ -28,7 +28,7 @@ class Editor(GuiLayout):
         self.titelAktualisieren()
 
         #Bilder
-        self.mausBild = PhotoImage(file=RESOURCE_PFAD+"maus.gif")
+        self.mausBild = PhotoImage(file=resource_path("maus.gif"))
         
         #GUI Elemente
 
@@ -72,7 +72,7 @@ class Editor(GuiLayout):
 
     def close(self):
         if not self.gespeichert:
-            speichern = tkMessageBox.askquestion("Datei speichern?", "Datei wurde nicht gespeichert!\nJetzt speichern?", icon="warning")
+            speichern = tkinter.messagebox.askquestion("Datei speichern?", "Datei wurde nicht gespeichert!\nJetzt speichern?", icon="warning")
             if speichern == "yes":
                 self.weltSpeichern()
         
@@ -163,8 +163,4 @@ class Editor(GuiLayout):
             self.dateipfad = dialog.datei
             
             self.speicherzustandAktualisieren(True)
-            self.aktualisieren()
-
-if __name__=="__main__":
-    gui = Editor()
-        
+            self.aktualisieren()        

@@ -1,6 +1,6 @@
-from gui import *
+from .gui import *
 from time import *
-from welt import *
+from .welt import *
 
 class Roboter:
     welt = None
@@ -23,8 +23,10 @@ class Roboter:
         if not self.guiLayout:
             self.guiLayout = GuiLayout(self.welt)
             self.guiLayout.start()
-
-        self.interface = self.guiLayout.welt_CNV#
+            while self.guiLayout.welt_CNV is None: # warte bis thread gestartet ist
+                pass
+        
+        self.interface = self.guiLayout.welt_CNV
         self.interface.aktualisiere(self)
 
     def vor(self):
@@ -88,8 +90,3 @@ class Roboter:
         
         sleep(self.verzoegerung)
         self.interface.aktualisiere(self)
-
-if __name__ == "__main__":
-    rob = Roboter("test.welt")
-    for i in range(9):
-        rob.vor()

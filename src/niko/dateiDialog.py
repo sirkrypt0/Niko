@@ -1,8 +1,8 @@
 # -*- coding: cp1252 -*-
-from Tkinter import *
+from tkinter import *
 import os
 
-from niko import RESOURCE_PFAD
+from .util import resource_path
 
 class DateiDialog():
 
@@ -23,7 +23,7 @@ class DateiDialog():
 
         self.verzeichnis_ETY.bind('<Return>', self.verzeichnisWechselnETY)
 
-        self.zurueck_bild = PhotoImage(file=RESOURCE_PFAD+"zurueckKnopf.gif")
+        self.zurueck_bild = PhotoImage(file=resource_path("zurueckKnopf.gif"))
         
         self.zurueck_BTN = Button(self.toplevel, image=self.zurueck_bild, command=lambda:self.verzeichnisWechseln(None,".."))
         self.zurueck_BTN.place(x=5, y=10)
@@ -126,7 +126,7 @@ class SpeichernDialog(DateiDialog):
 
         #Neues Verzeichnis
 
-        self.verzeichnis_bild = PhotoImage(file=RESOURCE_PFAD+"verzeichnisAnlegen.gif")
+        self.verzeichnis_bild = PhotoImage(file=resource_path("verzeichnisAnlegen.gif"))
                                            
         self.neuesVerzeichnis_BTN = Button(self.toplevel, image=self.verzeichnis_bild, command=self.neuesVerzeichnis)
         self.neuesVerzeichnis_BTN.place(x=343, y=10)
@@ -223,7 +223,3 @@ class OeffnenDialog(DateiDialog):
                 
                 self.toplevel.quit()
                 self.toplevel.destroy()
-
-
-if __name__ == "__main__":
-    sd = OeffnenDialog()

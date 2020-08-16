@@ -1,8 +1,8 @@
-from Tkinter import *
-import tkFileDialog
-from roboter import *
+from tkinter import *
+import tkinter.filedialog
+from .roboter import *
 
-from niko import RESOURCE_PFAD
+from .util import resource_path
 
 class Ti:
     def __init__(self):
@@ -25,14 +25,14 @@ class Ti:
         self.nimm_BTN.place(x=10,y=250,width=120,height=40)
         
         #Aufnahmeknopf
-        self.record = PhotoImage(file=RESOURCE_PFAD+"record.gif")
+        self.record = PhotoImage(file=resource_path("record.gif"))
 
-        self.stop = PhotoImage(file=RESOURCE_PFAD+"stop.gif")
+        self.stop = PhotoImage(file=resource_path("stop.gif"))
         
         self.record_BTN=Button(self.button_FRM,command=self.recordstart,image=self.record)
         self.record_BTN.place(x=25,y=329,width=90,height=90)
 
-        self.roboterBild = PhotoImage(file=RESOURCE_PFAD+"robi_0.gif")
+        self.roboterBild = PhotoImage(file=resource_path("robi_0.gif"))
 
         self.roboter.interface.aktualisiere(self.roboter)
 
@@ -75,11 +75,7 @@ class Ti:
         self.record_BTN.configure(text="Aufnahme starten",command=self.recordstart,image=self.record)
         self.recording=False
         
-        log_out=open(tkFileDialog.asksaveasfilename(defaultextension=".py",initialfile="Log",title="Robomoves als Log speichern"),"w")
+        log_out=open(tkinter.filedialog.asksaveasfilename(defaultextension=".py",initialfile="Log",title="Robomoves als Log speichern"),"w")
         for befehl in self.log:
             log_out.write(befehl+"\n")
         log_out.close()
-
-
-if __name__=="__main__":
-    ti = Ti()
