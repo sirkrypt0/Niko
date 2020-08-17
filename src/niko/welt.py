@@ -41,6 +41,7 @@ class Welt:
     def zaehle_Werkzeug(self, x, y):
         if self.feld[y][x] != -1:
             return self.feld[y][x]
+        return 0
 
     def setze_Mauer(self, x, y):
         if self.feld[y][x] == 0:

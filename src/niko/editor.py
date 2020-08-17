@@ -5,6 +5,7 @@ from .welt import *
 from .dateiDialog import *
 from .gui import *
 import tkinter.messagebox
+import os
 
 from .util import resource_path
 
@@ -20,7 +21,7 @@ class Editor(GuiLayout):
         self.title = "Niko-Editor"
 
         #Datei
-        self.standardDateiPfad = os.getcwd() + "\\NeueWelt.welt"
+        self.standardDateiPfad = os.path.join(os.getcwd(), "NeueWelt.welt")
         self.dateipfad = self.standardDateiPfad
         self.gespeichert = False
         self.neu = True
@@ -80,7 +81,7 @@ class Editor(GuiLayout):
         self.hauptfenster.destroy()
 
     def titelAktualisieren(self):
-        dateiname = self.dateipfad.split("\\")[-1]
+        dateiname = os.path.basename(self.dateipfad)
         
         if self.gespeichert:
             self.hauptfenster.title(self.title + " - %s - %s" %(dateiname, self.dateipfad))
@@ -89,14 +90,14 @@ class Editor(GuiLayout):
 
     def loescheAlles(self):
         self.welt = Welt()
-        if self.welt_CNV.find_withtag('bild'):
-            self.welt_CNV.delete("bild")
+        self.welt_CNV.reset()
+        self.welt_CNV.welt = self.welt
 
     def koordinaten(self,event):
-        x = event.x/self.welt_CNV.feldgroesse
+        x = int(event.x/self.welt_CNV.feldgroesse)
         if x > 13: x = 13
         
-        y = event.y/self.welt_CNV.feldgroesse
+        y = int(event.y/self.welt_CNV.feldgroesse)
         if y > 13: y = 13
         
         return (x,y)
@@ -109,8 +110,6 @@ class Editor(GuiLayout):
         #Änderung erkennen
         if self.gespeichert:
             self.speicherzustandAktualisieren(False)
-            
-        self.welt_CNV.aktualisiere()
         
     def toggleMauerEvent(self,event):
         (x,y) = self.koordinaten(event)
@@ -119,18 +118,21 @@ class Editor(GuiLayout):
         elif self.welt.mauerVorhanden(x,y):
             self.welt.entferne_Mauer(x,y)
         self.aktualisieren()
+        self.welt_CNV.mauernAktualisieren()
             
     def werkzeugSetzenEvent(self,event):
         (x,y) = self.koordinaten(event)
         if not self.welt.mauerVorhanden(x,y):
             self.welt.setze_Werkzeug(x,y)
         self.aktualisieren()
+        self.welt_CNV.werkzeugeAktualisieren()
 
     def werkzeugEntfernenEvent(self, event):
         (x,y) = self.koordinaten(event)
         if self.welt.zaehle_Werkzeug(x,y) >= 0:
             self.welt.entferne_Werkzeug(x,y)
         self.aktualisieren()
+        self.welt_CNV.werkzeugeAktualisieren()
 
     def neu(self):
         self.dateipfad = self.standardDateiPfad
@@ -163,4 +165,6 @@ class Editor(GuiLayout):
             self.dateipfad = dialog.datei
             
             self.speicherzustandAktualisieren(True)
-            self.aktualisieren()        
+            self.welt_CNV.werkzeugeAktualisieren()
+            self.welt_CNV.mauernAktualisieren()
+            self.neu = False

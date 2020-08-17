@@ -109,17 +109,13 @@ class SpeichernDialog(DateiDialog):
         
         self.gespeichert = False
 
-        pfad = "".join(self.datei.split("\\")[:-2])
-
-        self.verzeichnisWechseln(None, pfad)
-
         self.liste.bind("<<ListboxSelect>>", self.onListboxSelect)
         
         #Neue Datei
             
         self.neueDatei_ETY = Entry(self.toplevel, width= 33)
         self.neueDatei_ETY.place(x=35, y=210)
-        self.neueDatei_ETY.insert(0,self.datei.split("\\")[-1])        
+        self.neueDatei_ETY.insert(0,os.path.basename(self.datei))        
 
         self.neueDatei_BTN = Button(self.toplevel, text="Datei speichern", font="Calibri 9", command=self.neueDatei)
         self.neueDatei_BTN.place(x=243, y=209, height=20)
@@ -141,7 +137,7 @@ class SpeichernDialog(DateiDialog):
         selection = self.liste.get(self.liste.curselection())
 
         # Entry nur bei Dateien ausfuellen
-        if os.path.isfile(os.getcwd()+"/"+selection):
+        if os.path.isfile(os.path.join(os.getcwd(), selection)):
             self.neueDatei_ETY.delete(0, END)
             self.neueDatei_ETY.insert(0, selection)
 
@@ -164,7 +160,7 @@ class SpeichernDialog(DateiDialog):
                 datei.write(zeile)
 
             #Dateipfad zum neu öffnen speichern
-            self.datei = os.getcwd()+"\\"+name
+            self.datei = os.path.join(os.getcwd(), name)
             self.gespeichert = True
             
             datei.close()
@@ -215,7 +211,7 @@ class OeffnenDialog(DateiDialog):
                 self.welt = welt
 
                 #Dateinamen zum neu öffnen speichern
-                self.datei = os.getcwd()+"\\"+name
+                self.datei = os.path.join(os.getcwd(), name)
 
                 self.geoeffnet = True
                 

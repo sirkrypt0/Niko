@@ -122,6 +122,11 @@ class WeltCanvas(Canvas):
             self.delete("werkzeug")
         self.werkzeugeLegen()
 
+    def mauernAktualisieren(self):
+        if self.find_withtag("mauer"):
+            self.delete("mauer")
+        self.mauernBauen()
+
     def roboterAktualisieren(self, roboter):
         if self.find_withtag(roboter.name):
             self.delete(roboter.name)
@@ -138,7 +143,15 @@ class WeltCanvas(Canvas):
         if roboter.ausrichtung == 3:
             image = self.roboterBildRechts
             
-        self.create_image(robX, robY, anchor=CENTER, image=image, tags=(roboter.name))
+        self.create_image(robX, robY, anchor=CENTER, image=image, tags=("roboter", roboter.name))
+
+    def reset(self):
+        if self.find_withtag("werkzeug"):
+            self.delete("werkzeug")
+        if self.find_withtag("mauer"):
+            self.delete("mauer")
+        if self.find_withtag("roboter"):
+            self.delete("roboter")
 
 class BasisFrame(Frame):
     def __init__(self,hauptfenster,hintergrund):
