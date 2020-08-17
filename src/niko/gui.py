@@ -26,8 +26,11 @@ class GuiThreaded(Thread):
         self.gui.hauptfenster.mainloop()
         self.teardown()
 
-    def aktualisiere(self, roboter):
-        self.gui.welt_CNV.aktualisiere(roboter)
+    def roboterAktualisieren(self, roboter):
+        self.gui.welt_CNV.roboterAktualisieren(roboter)
+
+    def werkzeugeAktualisieren(self):
+        self.gui.welt_CNV.werkzeugeAktualisieren()
 
 
 class GuiLayout():
@@ -76,7 +79,8 @@ class WeltCanvas(Canvas):
         self.roboterBildUnten = PhotoImage(file=resource_path("robi_2.gif"))
         self.roboterBildRechts = PhotoImage(file=resource_path("robi_3.gif"))
         
-        self.aktualisiere()
+        self.mauernBauen()
+        self.werkzeugeLegen()
 
     def cleanup(self):
         del self.mauerBild, self.hammerBild, self.roboterBildOben, self.roboterBildLinks, self.roboterBildUnten, self.roboterBildRechts
@@ -91,37 +95,50 @@ class WeltCanvas(Canvas):
             self.welt_CNV.create_line(0,i*self.feldgrosse, self.grosse,i*self.feldgrosse,fill="blue")
         for j in range(1,self.welt.dimension):
             self.welt_CNV.create_line(j*self.feldgrosse,0, j*self.feldgrosse,self.grosse, fill="blue")
-            
-    def aktualisiere(self, roboter=None):
-        if self.find_withtag('bild'):
-            self.delete("bild")
+    
+    def canvasKoordinate(self, c):
+        return c * self.feldgroesse + self.feldgroesse * 0.5
+    
+    def mauernBauen(self):
         for y in range(self.welt.dimension):
             for x in range(self.welt.dimension):
-                xp = x*self.feldgroesse + self.feldgroesse*0.5
-                yp = y*self.feldgroesse + self.feldgroesse*0.5
-
+                xp = self.canvasKoordinate(x)
+                yp = self.canvasKoordinate(y)
                 if self.welt.mauerVorhanden(x,y):
-                    self.create_image(xp,yp, anchor=CENTER, image=self.mauerBild, tags=("bild"))
+                    self.create_image(xp,yp, anchor=CENTER, image=self.mauerBild, tags=("mauer"))
+
+    def werkzeugeLegen(self):
+        for y in range(self.welt.dimension):
+            for x in range(self.welt.dimension):
+                xp = self.canvasKoordinate(x)
+                yp = self.canvasKoordinate(y)
+
                 if self.welt.zaehle_Werkzeug(x,y) > 0:
-                    self.create_image(xp,yp, anchor=CENTER, image=self.hammerBild, tags=("bild"))
+                    bild = self.create_image(xp,yp, anchor=CENTER, image=self.hammerBild, tags=("werkzeug"))
+                    self.tag_lower(bild)
 
-        if roboter:
-            if self.find_withtag("roboter"):
-                self.delete("roboter")
+    def werkzeugeAktualisieren(self):
+        if self.find_withtag("werkzeug"):
+            self.delete("werkzeug")
+        self.werkzeugeLegen()
 
-            robX = roboter.pos_x * self.feldgroesse + self.feldgroesse * 0.5
-            robY = roboter.pos_y * self.feldgroesse + self.feldgroesse * 0.5
+    def roboterAktualisieren(self, roboter):
+        if self.find_withtag(roboter.name):
+            self.delete(roboter.name)
 
-            if roboter.ausrichtung == 0:
-                image = self.roboterBildOben
-            if roboter.ausrichtung == 1:
-                image = self.roboterBildLinks
-            if roboter.ausrichtung == 2:
-                image = self.roboterBildUnten
-            if roboter.ausrichtung == 3:
-                image = self.roboterBildRechts
-                
-            self.create_image(robX, robY, anchor=CENTER, image=image, tags=("roboter"))
+        robX = self.canvasKoordinate(roboter.pos_x)
+        robY = self.canvasKoordinate(roboter.pos_y)
+
+        if roboter.ausrichtung == 0:
+            image = self.roboterBildOben
+        if roboter.ausrichtung == 1:
+            image = self.roboterBildLinks
+        if roboter.ausrichtung == 2:
+            image = self.roboterBildUnten
+        if roboter.ausrichtung == 3:
+            image = self.roboterBildRechts
+            
+        self.create_image(robX, robY, anchor=CENTER, image=image, tags=(roboter.name))
 
 class BasisFrame(Frame):
     def __init__(self,hauptfenster,hintergrund):

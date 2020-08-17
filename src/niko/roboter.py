@@ -5,10 +5,12 @@ from .welt import *
 class Roboter:
     welt = None
     guiLayout = None
-    def __init__(self, weltdatei=None, verzoegerung=0.1):
+    anzahl = 0
+    def __init__(self, weltdatei=None, verzoegerung=0.1, name=None):
 
+        self.name = "roboter{Roboter.anzahl}" if name is None else name
+        Roboter.anzahl += 1
         self.verzoegerung = verzoegerung
-        
         if Roboter.welt is None:
             if not weltdatei:
                 Roboter.welt = Welt()
@@ -27,7 +29,11 @@ class Roboter:
                 pass
         
         self.interface = Roboter.guiLayout
-        self.interface.aktualisiere(self)
+        self.interface.roboterAktualisieren(self)
+
+    def positionAktualisieren(self):
+        sleep(self.verzoegerung)
+        self.interface.roboterAktualisieren(self)
 
     def vor(self):
         if self.ausrichtung == 0:
@@ -42,15 +48,11 @@ class Roboter:
         elif self.ausrichtung == 3:
             if self.pos_x != self.welt.dimension-1:
                 self.pos_x += 1
-
-        sleep(self.verzoegerung)
-        self.interface.aktualisiere(self)
+        self.positionAktualisieren()   
 
     def links(self):
         self.ausrichtung = (self.ausrichtung + 1) % 4
-
-        sleep(self.verzoegerung)
-        self.interface.aktualisiere(self)
+        self.positionAktualisieren()
 
     def vorne_frei(self):
         if self.ausrichtung == 0:
@@ -80,13 +82,9 @@ class Roboter:
     def nimm(self):
         self.welt.entferne_Werkzeug(self.pos_x, self.pos_y)
         self.lager += 1
-        
-        sleep(self.verzoegerung)
-        self.interface.aktualisiere(self)
+        self.interface.werkzeugeAktualisieren()
         
     def gib(self):
         self.welt.setze_Werkzeug(self.pos_x, self.pos_y)
         self.vorrat -= 1
-        
-        sleep(self.verzoegerung)
-        self.interface.aktualisiere(self)
+        self.interface.werkzeugeAktualisieren()
