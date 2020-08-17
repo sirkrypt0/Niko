@@ -1,27 +1,28 @@
 from tkinter import *
 import tkinter.filedialog
 from .roboter import *
+from .gui import *
 
 from .util import resource_path
 
-class Ti:
+class Ti(GuiLayout):
     def __init__(self):
+        GuiLayout.__init__(self, Welt())
+        self.roboter = Roboter(weltobjekt=self.welt, verzoegerung=0, gui = self)
 
-        self.roboter = Roboter(None, 0)
-        
-        self.button_FRM = self.roboter.guiLayout.leiste_FRM
+        self.hauptfenster.title("Niko - Teaching interactive")
         
         #Buttons
-        self.vor_BTN=Button(self.button_FRM,bg="pink",text="vor",command=self.guivor)
+        self.vor_BTN=Button(self.leiste_FRM,bg="pink",text="vor",command=self.guivor)
         self.vor_BTN.place(x=10,y=10,width=120,height=40)
         
-        self.links_BTN=Button(self.button_FRM,bg="pink",text="links",command=self.guilinks)
+        self.links_BTN=Button(self.leiste_FRM,bg="pink",text="links",command=self.guilinks)
         self.links_BTN.place(x=10,y=50,width=120,height=40)
 
-        self.gib_BTN=Button(self.button_FRM,bg="pink",text="gib",command=self.guigib)
+        self.gib_BTN=Button(self.leiste_FRM,bg="pink",text="gib",command=self.guigib)
         self.gib_BTN.place(x=10,y=210,width=120,height=40)
         
-        self.nimm_BTN=Button(self.button_FRM,bg="pink",text="nimm",command=self.guinimm)
+        self.nimm_BTN=Button(self.leiste_FRM,bg="pink",text="nimm",command=self.guinimm)
         self.nimm_BTN.place(x=10,y=250,width=120,height=40)
         
         #Aufnahmeknopf
@@ -29,16 +30,18 @@ class Ti:
 
         self.stop = PhotoImage(file=resource_path("stop.gif"))
         
-        self.record_BTN=Button(self.button_FRM,command=self.recordstart,image=self.record)
+        self.record_BTN=Button(self.leiste_FRM,command=self.recordstart,image=self.record)
         self.record_BTN.place(x=25,y=329,width=90,height=90)
 
         self.roboterBild = PhotoImage(file=resource_path("robi_0.gif"))
 
-        self.roboter.interface.aktualisiere(self.roboter)
+        self.roboter.positionAktualisieren()
 
         self.recording=False
 
         self.log=[]
+
+        self.hauptfenster.mainloop()
         
     def guirechts(self):
         if self.recording:

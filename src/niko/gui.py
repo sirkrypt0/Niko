@@ -27,10 +27,10 @@ class GuiThreaded(Thread):
         self.teardown()
 
     def roboterAktualisieren(self, roboter):
-        self.gui.welt_CNV.roboterAktualisieren(roboter)
+        self.gui.roboterAktualisieren(roboter)
 
     def werkzeugeAktualisieren(self):
-        self.gui.welt_CNV.werkzeugeAktualisieren()
+        self.gui.werkzeugeAktualisieren()
 
 
 class GuiLayout():
@@ -39,6 +39,7 @@ class GuiLayout():
 
         self.hauptfenster=Tk()
         self.hauptfenster.geometry("743x688")
+        self.hauptfenster.title("Niko")
 
         self.feldHintergrund = "white"
         self.leistenHintergrund = "#BBBBBB"
@@ -51,6 +52,12 @@ class GuiLayout():
         self.welt_CNV.cleanup()
         self.hauptfenster.quit()
         del self.welt_CNV, self.leiste_FRM, self.hauptfenster
+
+    def roboterAktualisieren(self, roboter):
+        self.welt_CNV.roboterAktualisieren(roboter)
+
+    def werkzeugeAktualisieren(self):
+        self.welt_CNV.werkzeugeAktualisieren()
 
 
 class WeltCanvas(Canvas):

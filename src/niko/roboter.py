@@ -6,13 +6,15 @@ class Roboter:
     welt = None
     guiLayout = None
     anzahl = 0
-    def __init__(self, weltdatei=None, verzoegerung=0.1, name=None):
+    def __init__(self, weltdatei=None, verzoegerung=0.1, weltobjekt=None, name=None, gui=None):
 
         self.name = f"roboter{Roboter.anzahl}" if name is None else name
         Roboter.anzahl += 1
         self.verzoegerung = verzoegerung
         if Roboter.welt is None:
-            if not weltdatei:
+            if weltobjekt is not None:
+                Roboter.welt = weltobjekt
+            elif weltdatei is None:
                 Roboter.welt = Welt()
             else:
                 Roboter.welt = Welt(weltdatei)
@@ -22,13 +24,13 @@ class Roboter:
         self.vorrat = 200
         self.lager = 0
 
-        if Roboter.guiLayout is None:
+        if Roboter.guiLayout is None and gui is None:
             Roboter.guiLayout = GuiThreaded(Roboter.welt)
             Roboter.guiLayout.start()
             while Roboter.guiLayout.welt_CNV is None: # warte bis thread gestartet ist
                 pass
         
-        self.interface = Roboter.guiLayout
+        self.interface = Roboter.guiLayout if gui is None else gui
         self.interface.roboterAktualisieren(self)
 
     def positionAktualisieren(self):
