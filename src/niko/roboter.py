@@ -8,7 +8,7 @@ class Roboter:
     anzahl = 0
     def __init__(self, weltdatei=None, verzoegerung=0.1, name=None):
 
-        self.name = "roboter{Roboter.anzahl}" if name is None else name
+        self.name = f"roboter{Roboter.anzahl}" if name is None else name
         Roboter.anzahl += 1
         self.verzoegerung = verzoegerung
         if Roboter.welt is None:

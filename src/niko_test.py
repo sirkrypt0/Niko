@@ -1,10 +1,20 @@
 from niko import *
 rob = Roboter("test.welt")
-for i in range(9):
+rob.vor()
+rob2 = Roboter()
+rob2.links()
+rob2.vor()
+for i in range(8):
     rob.gib()
     rob.vor()
+    rob2.gib()
+    rob2.vor()
 rob.links()
 rob.links()
-for i in range(9):
+rob2.links()
+rob2.links()
+for i in range(8):
     rob.vor()
     rob.nimm()
+    rob2.vor()
+    rob2.nimm()
